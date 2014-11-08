@@ -200,35 +200,48 @@ n .*. m = m .*. n
 -------------------------------------------
 -- Рациональные числа
 
-data Rat = Rat Int Nat
+data Rat = Rat Int Nat deriving (Show, Read)
 
 ratNeg :: Rat -> Rat
 ratNeg (Rat x y) = Rat (intNeg x) y
 
 -- У рациональных ещё есть обратные элементы
 ratInv :: Rat -> Rat
-ratInv = undefined
+ratInv (Rat (Pos x) y) = Rat (Pos y) x
+ratInv q = ratNeg . ratInv . ratNeg $ q
 
 -- Дальше как обычно
 ratCmp :: Rat -> Rat -> Tri
-ratCmp = undefined
+ratCmp (Rat a b) (Rat c d) = intCmp (a .*. Pos d) (Pos b .*. c)
 
 ratEq :: Rat -> Rat -> Bool
-ratEq = undefined
+ratEq n m = case (n `ratCmp` m) of EQ -> True
+                                   _  -> False
 
 ratLt :: Rat -> Rat -> Bool
-ratLt = undefined
+ratLt n m = case (n `ratCmp` m) of LT -> True
+                                   _  -> False
+
+ratGt :: Rat -> Rat -> Bool
+ratGt n m = case (n `ratCmp` m) of GT -> True
+                                   _  -> False
 
 infixl 7 %+, %-
 (%+) :: Rat -> Rat -> Rat
-n %+ m = undefined
+(Rat a b) %+ (Rat c d) =
+    let nominator   = a .*. Pos d .+. Pos b .*. c
+        denominator = b *. d
+    in Rat nominator denominator
 
 (%-) :: Rat -> Rat -> Rat
 n %- m = n %+ (ratNeg m)
 
 infixl 7 %*, %/
 (%*) :: Rat -> Rat -> Rat
-n %* m = undefined
+(Rat a b) %* (Rat c d) =
+    let nominator   = a .*. c
+        denominator = b *. d
+    in Rat nominator denominator
 
 (%/) :: Rat -> Rat -> Rat
 n %/ m = n %* (ratInv m)
