@@ -246,6 +246,11 @@ infixl 7 %*, %/
 (%/) :: Rat -> Rat -> Rat
 n %/ m = n %* (ratInv m)
 
+toLowestTerms :: Rat -> Rat
+toLowestTerms (Rat (Pos x) y) = Rat (Pos (x `natDiv` q)) (y `natDiv` q)
+    where q = gcd x y
+toLowestTerms q = ratNeg . toLowestTerms . ratNeg $ q
+
 -------------------------------------------
 -- Операции над функциями.
 -- Определены здесь, но использовать можно и выше
