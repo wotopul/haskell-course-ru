@@ -127,8 +127,8 @@ Zero     *. m = Zero
 
 -- Целое и остаток от деления n на m
 natDivMod :: Nat -> Nat -> Pair Nat Nat
-natDivMod n m = case (n `natCmp` m) of LT -> Pair Zero n
-                                       EQ -> Pair natOne Zero
+natDivMod n m = case (n `natCmp` m) of LT -> Pair natZero n
+                                       EQ -> Pair natOne natZero
                                        GT -> Pair (Succ q) r where
                                           Pair q r = (n -. m) `natDivMod` m
 
@@ -137,43 +137,65 @@ natMod n = snd . natDivMod n -- Остаток
 
 -- Поиск GCD алгоритмом Евклида (должен занимать 2 (вычислителельная часть) + 1 (тип) строчки)
 gcd :: Nat -> Nat -> Nat
-gcd = undefined
+gcd a Zero = a
+gcd a b = gcd b (a `natMod` b)
 
 -------------------------------------------
 -- Целые числа
 
 -- Требуется, чтобы представление каждого числа было единственным
-data Int = UNDEFINED deriving (Show,Read)
+data Int = Neg Nat | Pos Nat deriving (Show,Read)
 
-intZero   = undefined   -- 0
-intOne    = undefined     -- 1
-intNegOne = undefined -- -1
+intZero   = Pos natZero -- 0
+intOne    = Pos natOne  -- 1
+intNegOne = Neg natZero -- -1
 
 -- n -> - n
 intNeg :: Int -> Int
-intNeg = undefined
+intNeg (Pos Zero) = Pos Zero
+intNeg (Pos (Succ n)) = Neg n
+intNeg (Neg n) = Pos (Succ n)
+
+abs :: Int -> Nat
+abs (Pos n) = n
+abs (Neg n) = Succ n
 
 -- Дальше также как для натуральных
 intCmp :: Int -> Int -> Tri
-intCmp = undefined
+intCmp (Neg n) (Neg m) = natCmp m n
+intCmp (Pos n) (Pos m) = natCmp n m
+intCmp (Neg _) (Pos _) = LT
+intCmp (Pos _) (Neg _) = GT
 
 intEq :: Int -> Int -> Bool
-intEq = undefined
+intEq n m = case (n `intCmp` m) of EQ -> True
+                                   _  -> False
 
 intLt :: Int -> Int -> Bool
-intLt = undefined
+intLt n m = case (n `intCmp` m) of LT -> True
+                                   _  -> False
+
+intGt :: Int -> Int -> Bool
+intGt n m = case (n `intCmp` m) of GT -> True
+                                   _  -> False
 
 infixl 6 .+., .-.
 -- У меня это единственный страшный терм во всём файле
 (.+.) :: Int -> Int -> Int
-n .+. m = undefined
+(Pos n) .+. (Pos m) = Pos (n +. m)
+(Neg n) .+. (Neg m) = Neg (Succ (n +. m))
+(Pos n) .+. (Neg m) = case natCmp n (Succ m) of LT -> Neg (m -. n)
+                                                _  -> Pos (n -. Succ m)
+n .+. m = m .+. n
 
 (.-.) :: Int -> Int -> Int
 n .-. m = n .+. (intNeg m)
 
 infixl 7 .*.
 (.*.) :: Int -> Int -> Int
-n .*. m = undefined
+(Pos n) .*. (Pos m) = Pos (n *. m)
+n .*. m@(Neg _) = intNeg (n .*. intNeg m)
+n .*. m = m .*. n
 
 -------------------------------------------
 -- Рациональные числа
