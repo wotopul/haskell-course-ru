@@ -127,7 +127,10 @@ Zero     *. m = Zero
 
 -- Целое и остаток от деления n на m
 natDivMod :: Nat -> Nat -> Pair Nat Nat
-natDivMod n m = undefined
+natDivMod n m = case (n `natCmp` m) of LT -> Pair Zero n
+                                       EQ -> Pair natOne Zero
+                                       GT -> Pair (Succ q) r where
+                                          Pair q r = (n -. m) `natDivMod` m
 
 natDiv n = fst . natDivMod n -- Целое
 natMod n = snd . natDivMod n -- Остаток
