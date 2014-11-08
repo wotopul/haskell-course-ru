@@ -121,7 +121,9 @@ Zero     +. m = m
 infixl 6 -.
 -- Вычитание для натуральных чисел
 (-.) :: Nat -> Nat -> Nat
-n -. m = undefined
+Zero     -. _        = Zero
+n        -. Zero     = n
+(Succ n) -. (Succ m) = n -. m
 
 infixl 7 *.
 -- Умножение для натуральных чисел
