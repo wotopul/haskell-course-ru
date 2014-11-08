@@ -93,24 +93,18 @@ natCmp (Succ n) (Succ m) = natCmp n m
 
 -- n совпадает с m 
 natEq :: Nat -> Nat -> Bool
-natEq Zero     Zero     = True
-natEq Zero     (Succ _) = False
-natEq (Succ _) Zero     = False
-natEq (Succ n) (Succ m) = natEq n m
+natEq n m = case (n `natCmp` m) of EQ -> True
+                                   _  -> False
 
 -- n меньше m
 natLt :: Nat -> Nat -> Bool
-natLt Zero     Zero     = False
-natLt Zero     (Succ m) = True
-natLt (Succ n) Zero     = False
-natLt (Succ n) (Succ m) = natLt n m
+natLt n m = case (n `natCmp` m) of LT -> True
+                                   _  -> False
 
 -- n больше m
 natGt :: Nat -> Nat -> Bool
-natGt Zero     Zero     = False
-natGt Zero     (Succ m) = False
-natGt (Succ n) Zero     = True
-natGt (Succ n) (Succ m) = natGt n m
+natGt n m = case (n `natCmp` m) of GT -> True
+                                   _  -> False
 
 infixl 6 +.
 -- Сложение для натуральных чисел
