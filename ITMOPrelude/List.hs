@@ -30,19 +30,23 @@ Nil ++ ys = ys
 
 -- Список без первого элемента
 tail :: List a -> List a
+tail Nil = error "tail: empty list"
 tail (Cons _ xs) = xs
 
 -- Список без последнего элемента
 init :: List a -> List a
+init Nil = error "init: empty list"
 init (Cons x Nil) = Nil
 init (Cons x xs) = Cons x (init xs)
 
 -- Первый элемент
 head :: List a -> a
+head Nil = error "head: empty list"
 head (Cons x _) = x
 
 -- Последний элемент
 last :: List a -> a
+last Nil = error "last: empty list"
 last (Cons x Nil) = x
 last (Cons _ xs) = last xs
 
