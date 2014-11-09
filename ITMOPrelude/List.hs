@@ -107,11 +107,14 @@ break p = span (not . p)
 -- n-ый элемент списка (считая с нуля)
 (!!) :: List a -> Nat -> a
 Nil !! n = error "!!: empty list"
-l  !! n = undefined
+(Cons x _) !! Zero = x
+(Cons _ xs) !! (Succ n) = xs !! n
 
 -- Список задом на перёд
 reverse :: List a -> List a
-reverse = undefined
+reverse xs = rev xs Nil where
+    rev Nil ys = ys
+    rev (Cons x xs) ys = rev xs (Cons x ys)
 
 -- (*) Все подсписки данного списка
 subsequences :: List a -> List (List a)
@@ -129,7 +132,7 @@ permutations' = undefined
 
 -- Повторяет элемент бесконечное число раз
 repeat :: a -> List a
-repeat = undefined
+repeat x = Cons x (repeat x)
 
 -- Левая свёртка
 -- порождает такое дерево вычислений:
@@ -175,20 +178,27 @@ finiteTimeTest = take (Succ $ Succ $ Succ $ Succ Zero) $ foldr (Cons) Nil $ repe
 
 -- Применяет f к каждому элементу списка
 map :: (a -> b) -> List a -> List b
-map f l = undefined
+map f Nil = Nil
+map f (Cons x xs) = Cons (f x) (map f xs)
 
 -- Склеивает список списков в список
 concat :: List (List a) -> List a
-concat = undefined
+concat Nil = Nil
+concat (Cons x xs) = x ++ concat xs
 
 -- Эквивалент (concat . map), но эффективнее
 concatMap :: (a -> List b) -> List a -> List b
-concatMap = undefined
+concatMap _ Nil = Nil
+concatMap f (Cons x xs) = f x ++ concatMap f xs
 
 -- Сплющить два списка в список пар длинны min (length a, length b)
 zip :: List a -> List b -> List (Pair a b)
-zip a b = undefined
+zip Nil _ = Nil
+zip _ Nil = Nil
+zip (Cons x xs) (Cons y ys) = Cons (Pair x y) (zip xs ys)
 
 -- Аналогично, но плющить при помощи функции, а не конструктором Pair
 zipWith :: (a -> b -> c) -> List a -> List b -> List c
-zipWith = undefined
+zipWith _ Nil _ = Nil
+zipWith _ _ Nil = Nil
+zipWith f (Cons x xs) (Cons y ys) = Cons (f x y) (zipWith f xs ys)
