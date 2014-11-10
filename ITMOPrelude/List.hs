@@ -119,11 +119,13 @@ reverse xs = rev xs Nil where
 -- (*) Все подсписки данного списка
 subsequences :: List a -> List (List a)
 subsequences Nil = Cons Nil Nil
-subsequences (Cons x xs) = undefined
+subsequences (Cons x xs) = subsOfTail ++ map (Cons x) subsOfTail where
+    subsOfTail = subsequences xs
 
 -- (*) Все перестановки элементов данного списка
 permutations :: List a -> List (List a)
-permutations = undefined
+permutations Nil = Cons Nil Nil
+permutations (Cons x xs) = 
 
 -- (*) Если можете. Все перестановки элементов данного списка
 -- другим способом
