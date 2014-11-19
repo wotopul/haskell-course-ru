@@ -1,4 +1,4 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE NoImplicitPrelude, FlexibleInstances #-}
 module ITMOPredule.Algebra where
 
 import Prelude (Show, Read)
@@ -69,3 +69,24 @@ newtype All = All { getAll :: Bool } deriving (Show, Read)
 instance Monoid All where
     mempty = All True
     All a `mappend` All b = All (a && b)
+
+instance Monoid Tri where
+    mempty = EQ
+    LT `mappend` _ = LT
+    EQ `mappend` t = t
+    GT `mappend` _ = GT
+
+newtype Sum a = Sum { getSum :: a } deriving (Show, Read)
+
+newtype Product a = Product { getProduct :: a } deriving (Show, Read)
+
+instance Monoid (Sum Nat) where
+    mempty = Sum natZero
+    Sum a `mappend` Sum b = Sum (a +. b)
+
+instance Monoid (Product Nat) where
+    mempty = Product natOne
+    Product a `mappend` Product b = Product (a *. b)
+
+-- TODO List instance
+--      Tree instance
