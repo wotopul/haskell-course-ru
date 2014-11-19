@@ -39,3 +39,20 @@ instance (Monoid a) => Monoid (Maybe a) where
     Nothing `mappend` m = m
     m `mappend` Nothing = m
     Just m1 `mappend` Just m2 = Just (m1 `mappend` m2)
+
+-- Моноид Maybe, позволяющий получить первый Just
+newtype First a = First { getFirst :: Maybe a } deriving (Show, Read)
+
+instance Monoid (First a) where
+    mempty = First Nothing
+    f@(First (Just a)) `mappend` _ = f
+    First Nothing `mappend` f = f
+
+-- Моноид Maybe, позволяющий получить последний Just
+newtype Last a = Last { getLast :: Maybe a } deriving (Show, Read)
+
+instance Monoid (Last a) where
+    mempty = Last Nothing
+    _ `mappend` l@(First (Just a)) = l
+    l `mappend` First Nothing = l
+
