@@ -1,6 +1,8 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 module ITMOPredule.Algebra where
 
+import Prelude (Show, Read)
+
 -- Реализовать для всего,
 -- что только можно из
 import ITMOPrelude.Primitive
@@ -53,6 +55,17 @@ newtype Last a = Last { getLast :: Maybe a } deriving (Show, Read)
 
 instance Monoid (Last a) where
     mempty = Last Nothing
-    _ `mappend` l@(First (Just a)) = l
-    l `mappend` First Nothing = l
+    _ `mappend` l@(Last (Just a)) = l
+    l `mappend` Last Nothing = l
 
+newtype Any = Any { getAny :: Bool } deriving (Show, Read)
+
+instance Monoid Any where
+    mempty = Any False
+    Any a `mappend` Any b = Any (a || b)
+
+newtype All = All { getAll :: Bool } deriving (Show, Read)
+
+instance Monoid All where
+    mempty = All True
+    All a `mappend` All b = All (a && b)
