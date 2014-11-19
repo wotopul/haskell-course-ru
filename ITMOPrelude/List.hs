@@ -106,7 +106,7 @@ break p = span (not . p)
 
 -- n-ый элемент списка (считая с нуля)
 (!!) :: List a -> Nat -> a
-Nil !! n = error "!!: empty list"
+Nil !! n = error "!!: index too large"
 (Cons x xs) !! Zero = x
 (Cons x xs) !! (Succ n) = xs !! n
 
@@ -146,7 +146,7 @@ repeat x = Cons x (repeat x)
 --    / \
 --   f   l!!1
 --  / \
--- z  l!!0
+-- z   l!!0
 foldl :: (a -> b -> a) -> a -> List b -> a
 foldl f z Nil = z
 foldl f z (Cons x xs) = foldl f (f z x) xs
@@ -159,15 +159,15 @@ scanl f z (Cons x xs) = Cons z $ scanl f (f z x) xs
 
 -- Правая свёртка
 -- порождает такое дерево вычислений:
---    f
---   /  \
+--     f
+--    / \
 -- l!!0  f
---     /  \
+--      / \
 --   l!!1  f
---       /  \
---    l!!2  ...
---           \
---            z
+--        / \
+--     l!!2 ...
+--            \
+--             z
 --            
 foldr :: (a -> b -> b) -> b -> List a -> b
 foldr f z Nil = z
