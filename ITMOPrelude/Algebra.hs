@@ -99,5 +99,22 @@ instance Monoid (Product Int) where
 instance Group (Sum Int) where
     ginv = Sum . intNeg . getSum
 
--- TODO List instance
---      Tree instance
+instance Monoid (Sum Rat) where
+    mempty = Sum ratZero
+    Sum a `mappend` Sum b = Sum (a %+ b)
+
+instance Monoid (Product Rat) where
+    mempty = Product ratOne
+    Product a `mappend` Product b = Product (a %* b)
+
+instance Group (Sum Rat) where
+    ginv = Sum . ratNeg . getSum
+
+instance Group (Product Rat) where
+    ginv = Product . ratInv . getProduct
+
+instance Monoid (List a) where
+    mempty = Nil
+    mappend = (++)
+
+-- TODO Tree instance
