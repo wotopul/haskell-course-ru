@@ -202,6 +202,10 @@ n .*. m = m .*. n
 
 data Rat = Rat Int Nat deriving (Show, Read)
 
+ratZero   = Rat intZero   natOne
+ratOne    = Rat intOne    natOne
+ratNegOne = Rat intNegOne natOne
+
 ratNeg :: Rat -> Rat
 ratNeg (Rat x y) = Rat (intNeg x) y
 
