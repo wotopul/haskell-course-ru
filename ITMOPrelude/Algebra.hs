@@ -88,5 +88,16 @@ instance Monoid (Product Nat) where
     mempty = Product natOne
     Product a `mappend` Product b = Product (a *. b)
 
+instance Monoid (Sum Int) where
+    mempty = Sum intZero
+    Sum a `mappend` Sum b = Sum (a .+. b)
+
+instance Monoid (Product Int) where
+    mempty = Product intOne
+    Product a `mappend` Product b = Product (a .*. b)
+
+instance Group (Sum Int) where
+    ginv = Sum . intNeg . getSum
+
 -- TODO List instance
 --      Tree instance
