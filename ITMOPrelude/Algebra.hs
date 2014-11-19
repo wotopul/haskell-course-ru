@@ -20,4 +20,22 @@ class Monoid a => Group a where
 
 -- Инстансы писать сюда
 
+instance Monoid Unit where
+    mempty = Unit
+    Unit `mappend` Unit = Unit
 
+instance Group Unit where
+    ginv Unit = Unit
+
+instance (Monoid a, Monoid b) => Monoid (Pair a b) where
+    mempty = Pair mempty mempty
+    Pair a b `mappend` Pair a' b' = Pair (a `mappend` a') (b `mappend` b')
+
+instance (Group a, Group b) => Group (Pair a b) where
+    ginv (Pair a b) = Pair (ginv a) (ginv b)
+
+instance (Monoid a) => Monoid (Maybe a) where
+    mempty = Nothing
+    Nothing `mappend` m = m
+    m `mappend` Nothing = m
+    Just m1 `mappend` Just m2 = Just (m1 `mappend` m2)

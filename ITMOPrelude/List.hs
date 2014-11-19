@@ -1,7 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 module ITMOPrelude.List where
 
-import Prelude (Show,Read,error)
+import Prelude (Show, Read, error)
 import ITMOPrelude.Primitive
 
 ---------------------------------------------
@@ -125,7 +125,7 @@ subsequences (Cons x xs) = subsOfTail ++ map (Cons x) subsOfTail where
 -- (*) Все перестановки элементов данного списка
 permutations :: List a -> List (List a)
 permutations Nil = Cons Nil Nil
-permutations (Cons x xs) = 
+permutations (Cons x xs) = undefined
 
 -- (*) Если можете. Все перестановки элементов данного списка
 -- другим способом
