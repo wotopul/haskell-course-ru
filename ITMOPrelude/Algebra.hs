@@ -1,5 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude, FlexibleInstances #-}
-module ITMOPredule.Algebra where
+module ITMOPrelude.Algebra where
 
 import Prelude (Show, Read)
 
