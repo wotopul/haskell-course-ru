@@ -3,8 +3,6 @@ module ITMOPrelude.Tree where
 
 import Prelude (Show, Read)
 
-import ITMOPrelude.Algebra
-
 -- Всё что угодно, главное, чтобы соответствовало
 -- заданию
 
@@ -36,6 +34,7 @@ treeMap :: (a -> b) -> Tree a -> Tree b
 treeMap f Leaf = Leaf
 treeMap f (Node x l r) = Node (f x) (treeMap f l) (treeMap f r)
 
-foldMap :: (Monoid m) => (a -> m) -> Tree a -> m
-foldMap = undefined
-
+-- Аналог foldr для дерева
+foldrTree :: (a -> b -> b) -> b -> Tree a -> b
+foldrTree f z Leaf = z
+foldrTree f z (Node x l r) = foldrTree f (f x (foldrTree f z r)) l
