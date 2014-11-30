@@ -13,10 +13,14 @@ data RealWorld = RealWorld
 type IO a = State RealWorld a
 
 getNat :: IO Nat
-getNat = ?
+getNat = State $ \(RealWorld sIn sOut code) -> case sIn of
+    Cons x xs -> (RealWorld xs sOut code, x)
+    Nil -> undefined
 
 putNat :: Nat -> IO ()
-putNat = ?
+putNat n = State $ \(RealWorld sIn sOut code) ->
+    (RealWorld sIn (Cons n sOut) code, ())
 
 setExitCode :: Nat -> IO ()
-setExitCode = ?
+setExitCode newCode = State $ \(RealWorld sIn sOut code) ->
+    (RealWorld sIn sOut newCode, ())
