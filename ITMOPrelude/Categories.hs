@@ -27,6 +27,33 @@ ma >> mb = ma >>= (\_ -> mb)
 --------------------------------------------------------------------------------
 -- Инстансы писать сюда
 
+instance Functor Maybe where
+    fmap f Nothing = Nothing
+    fmap f (Just a) = Just (f a)
+
+instance Functor (Either e) where
+    fmap f (Left e) = Left e
+    fmap f (Right a) = Right (f a)
+
+instance Functor List where
+    fmap = map
+
+instance Functor Tree where
+    fmap = treeMap
+
+instance Monad Maybe where
+    return = Just
+    Nothing >>= f = Nothing
+    Just a >>= f = f a
+
+instance Monad (Either e) where
+    return = Right
+    Left e >>= f = Left e
+    Right a >>= f = f a
+
+instance Monad List where
+    return a = Cons a Nil
+    xs >>= f = concatMap f xs
 
 --------------------------------------------------------------------------------
 -- Монада State
@@ -34,5 +61,7 @@ ma >> mb = ma >>= (\_ -> mb)
 newtype State s a = State { runState :: s -> (s, a) }
 
 instance Monad (State s) where
-    return = ?
-    (>>=) = ?
+    return a = State $ \s -> (s, a)
+    (State g) >>= f = State $ \s -> let (s', a) = g s
+                                        (State h) = f a
+                                    in h s'
