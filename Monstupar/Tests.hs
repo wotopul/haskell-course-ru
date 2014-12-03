@@ -64,8 +64,18 @@ isStringTest p = do
 
 -- Список натуральных чисел
 -- тут следует использовать класс Read
+digit :: Monstupar Char Char
+digit = oneOf ['0'..'9']
+
+number :: Monstupar Char Integer
+number = many1 digit >>= return . read
+
 natList :: Monstupar Char [Integer]
-natList = undefined
+natList = do
+    e <- number
+    es <- many (char ',' >> number)
+    eof
+    return (e:es)
 
 natListTest = mustFail  ""
           &.& mustParse "0"
