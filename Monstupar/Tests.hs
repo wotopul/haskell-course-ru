@@ -3,6 +3,8 @@ module Monstupar.Tests where
 import Monstupar.Core
 import Monstupar.Derived
 
+import System.Random
+
 --------------------------------------------------------------------------------
 -- В помощь хозяйке
 
@@ -35,6 +37,30 @@ balParTest = mustParse ""
          &.& mustFail  "(())()(()()"
          &.& mustFail  "())()(()()"
          $ balPar
+
+-- Ровно данная строка
+type StringParser = String -> Monstupar Char String
+
+isString :: String -> StringParser -> Monstupar Char ()
+isString s p = p s >> eof
+
+genStrings :: Int -> IO [String]
+genStrings 0 = return []
+genStrings n = do
+    gen <- getStdGen
+    let len = fst $ randomR (0, 20) gen
+    gen' <- newStdGen
+    let x = take len $ (randomRs ('a','z') gen') 
+    xs <- genStrings (n - 1)
+    return (x:xs)
+
+isStringCheck :: [String] -> StringParser -> Bool
+isStringCheck xs p = and $ map (\s -> mustParse s (isString s p)) xs
+
+isStringTest :: StringParser -> IO Bool
+isStringTest p = do
+    xs <- genStrings 40
+    return $ isStringCheck xs p
 
 -- Список натуральных чисел
 -- тут следует использовать класс Read
