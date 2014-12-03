@@ -8,6 +8,8 @@ import Monstupar.Core
 -- поэтому конструировать парсеры тут можно только используя примитивные
 -- парсеры из Core.
 
+import Control.Monad
+
 --------------------------------------------------------------------------------
 -- Всякие удобные и полезные штуки
 
@@ -21,16 +23,28 @@ char = like . (==)
 
 -- В голове ввода сейчас что-то из списка
 oneOf :: Eq s => [s] -> Monstupar s s
-oneOf = undefined
+oneOf xs = like (`elem` xs)
 
 -- В префиксе головы сейчас нечто вполне определённое
 string :: Eq s => [s] -> Monstupar s [s]
-string = undefined
+string [] = return []
+string s@(x:xs) = do
+    e <- char x
+    es <- string xs
+    return s
+
+-- Если разрешено пользоваться плюшками из Monad.Control
+string' :: Eq s => [s] -> Monstupar s [s]
+string' xs = mapM char xs
 
 -- "Звёздочка" -- запустить парсер максимальное (ноль или более) число раз и
 -- саккумулировать результыты
 many :: Monstupar s a -> Monstupar s [a]
-many p = undefined
+many p = many' p <|> return [] where
+    many' p = do
+        e <- p
+        es <- many p
+        return (e:es)
 -- Аккуратно с реализацией! Следите за тем, чтобы у вас из-за использования <|>
 -- не рос в бесконечность стек.
 
@@ -43,5 +57,5 @@ many1 p = do
 
 -- "Вопросик" -- ноль или один раз
 optional :: Monstupar s a -> Monstupar s (Maybe a)
-optional = undefined
+optional p = ( p >>= \a -> return (Just a) ) <|> return Nothing
 
